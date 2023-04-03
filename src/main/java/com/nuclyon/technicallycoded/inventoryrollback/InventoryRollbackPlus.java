@@ -4,6 +4,7 @@ import com.nuclyon.technicallycoded.inventoryrollback.commands.Commands;
 import com.nuclyon.technicallycoded.inventoryrollback.UpdateChecker.UpdateResult;
 
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
+import com.nuclyon.technicallycoded.inventoryrollback.util.SchedulerUtil;
 import com.nuclyon.technicallycoded.inventoryrollback.util.TimeZoneUtil;
 import io.papermc.lib.PaperLib;
 import me.danjono.inventoryrollback.InventoryRollback;
@@ -100,7 +101,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
         HandlerList.unregisterAll(this);
 
         // Cancel tasks
-        this.getServer().getScheduler().cancelTasks(this);
+        SchedulerUtil.cancelTasks(this);
 
         // Clear instance references
         instancePlus = null;
@@ -125,7 +126,7 @@ public class InventoryRollbackPlus extends InventoryRollback {
     }
 
     public void checkUpdate() {
-        Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), () -> {
+        SchedulerUtil.runTaskAsynchronously(InventoryRollback.getInstance(), () -> {
             InventoryRollbackPlus.getInstance().getConsoleSender().sendMessage(MessageData.getPluginPrefix() + "Checking for updates...");
 
             final UpdateResult result = new UpdateChecker(getInstance(), 85811).getResult();

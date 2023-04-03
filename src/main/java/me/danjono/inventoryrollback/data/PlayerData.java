@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
+import com.nuclyon.technicallycoded.inventoryrollback.util.SchedulerUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
@@ -134,8 +135,8 @@ public class PlayerData {
         };
 
         InventoryRollbackPlus instance = InventoryRollbackPlus.getInstance();
-        if (saveAsync) instance.getServer().getScheduler().runTaskAsynchronously(instance, purgeTask);
-        else purgeTask.run();
+        if (saveAsync) SchedulerUtil.runTaskAsynchronously(instance, purgeTask);
+        else SchedulerUtil.runTask(instance, purgeTask);
 
         return future;
     }
@@ -263,7 +264,7 @@ public class PlayerData {
     public CompletableFuture<Void> getAllBackupData() {
         CompletableFuture<Void> future = new CompletableFuture<>();
         if (ConfigData.getSaveType() == SaveType.MYSQL) {
-            new BukkitRunnable() {
+            SchedulerUtil.runTaskAsynchronously(InventoryRollbackPlus.getInstance(), new BukkitRunnable() {
                 @Override
                 public void run() {
                     try {
@@ -273,7 +274,7 @@ public class PlayerData {
                     }
                     future.complete(null);
                 }
-            }.runTaskAsynchronously(InventoryRollbackPlus.getInstance());
+            });
         }
         return future;
     }
@@ -437,8 +438,8 @@ public class PlayerData {
             }
         };
 
-        if (saveAsync) Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(),saveDataTask);
-        else saveDataTask.run();
+        if (saveAsync) SchedulerUtil.runTaskAsynchronously(InventoryRollback.getInstance(),saveDataTask);
+        else SchedulerUtil.runTask(InventoryRollback.getInstance(),saveDataTask);
     }
 
     public int getMaxSaves() {

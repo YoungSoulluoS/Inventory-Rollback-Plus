@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
 import com.nuclyon.technicallycoded.inventoryrollback.nms.EnumNmsVersion;
+import com.nuclyon.technicallycoded.inventoryrollback.util.SchedulerUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -175,7 +176,7 @@ public abstract class InventoryRollback extends JavaPlugin {
     }
 
     public void checkUpdate() {
-        Bukkit.getScheduler().runTaskAsynchronously(InventoryRollback.getInstance(), () -> {
+        SchedulerUtil.runTaskAsynchronously(InventoryRollback.getInstance(), () -> {
             logger.log(Level.INFO, MessageData.getPluginPrefix() + "Checking for updates...");
 
             final UpdateResult result = new UpdateChecker(getInstance(), 85811).getResult();

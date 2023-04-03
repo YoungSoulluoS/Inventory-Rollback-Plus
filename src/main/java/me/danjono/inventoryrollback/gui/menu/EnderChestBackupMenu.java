@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.nuclyon.technicallycoded.inventoryrollback.InventoryRollbackPlus;
-import org.bukkit.Bukkit;
+import com.nuclyon.technicallycoded.inventoryrollback.util.SchedulerUtil;import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -85,7 +85,7 @@ public class EnderChestBackupMenu {
         try {
 
             // Add items, 5 per tick
-            new BukkitRunnable() {
+            Runnable runnable = new BukkitRunnable() {
 
                 int invPosition = 0;
                 int itemPos = (pageNumber - 1) * 27;
@@ -96,10 +96,8 @@ public class EnderChestBackupMenu {
                     for (int i = 0; i < 6; i++) {
                         // If hit max item position, stop
                         if (itemPos >= max) {
-                            this.cancel();
                             return;
                         }
-
 
                         ItemStack itemStack = enderchest[itemPos];
                         if (itemStack != null) {
@@ -110,8 +108,10 @@ public class EnderChestBackupMenu {
                         // Move to next item stack
                         itemPos++;
                     }
+                    SchedulerUtil.runTaskLater(InventoryRollbackPlus.getInstance(), this, 1);
                 }
-            }.runTaskTimer(InventoryRollbackPlus.getInstance(), 0, 1);
+            };
+            SchedulerUtil.runTask(InventoryRollbackPlus.getInstance(), runnable);
         } catch (NullPointerException e) {
             staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getErrorInventory());
             return;
